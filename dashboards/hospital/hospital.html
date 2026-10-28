@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OrganRoute Hospital Dashboard</title>
+    <link rel="stylesheet" href="hospital.css">
+</head>
+<body>
+    <header>
+        <a href="../../index.html">OrganRoute</a>
+        <span>Hospital Dashboard Demo</span>
+    </header>
+
+    <main class="container">
+        <h1>Hospital Dashboard</h1>
+        <p>Manage hospital information and demo requests.</p>
+        <p class="notice">Educational prototype — sample data only.</p>
+
+        <section class="stats">
+            <div class="card">
+                <h3>Total Requests</h3>
+                <h2 id="total">0</h2>
+            </div>
+            <div class="card">
+                <h3>Pending</h3>
+                <h2 id="pending">0</h2>
+            </div>
+            <div class="card">
+                <h3>Reviewed</h3>
+                <h2 id="reviewed">0</h2>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>Hospital Information</h2>
+            <p><b>Name:</b> Demo City Hospital</p>
+            <p><b>Location:</b> Noida, Uttar Pradesh</p>
+            <p><b>Speciality:</b> Multi-speciality</p>
+            <p><b>Verification:</b> Demo — not verified</p>
+        </section>
+
+        <section class="card">
+            <h2>Demo Requests</h2>
+
+            <label for="filter">Filter by status:</label>
+            <select id="filter">
+                <option value="All">All</option>
+                <option value="Pending">Pending</option>
+                <option value="Reviewed">Reviewed</option>
+            </select>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Request ID</th>
+                            <th>Request Type</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="requestList"></tbody>
+                </table>
+            </div>
+
+            <p id="empty" hidden>No requests found.</p>
+        </section>
+    </main>
+
+    <script src="hospital.js"></script>
+</body>
+</html>
