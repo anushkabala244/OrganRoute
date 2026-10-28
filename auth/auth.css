@@ -1,0 +1,147 @@
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f2f8f5;
+    color: #173b32;
+    min-height: 100vh;
+}
+
+.auth-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 24px;
+}
+
+.auth-card {
+    background: white;
+    width: 100%;
+    max-width: 480px;
+    padding: 32px;
+    border-radius: 18px;
+    box-shadow: 0 8px 30px rgba(0, 50, 35, 0.10);
+}
+
+.brand {
+    display: inline-block;
+    color: #087f5b;
+    font-size: 28px;
+    font-weight: bold;
+    text-decoration: none;
+    margin-bottom: 22px;
+}
+
+h1 {
+    font-size: 26px;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    color: #687a73;
+    line-height: 1.5;
+    margin-bottom: 24px;
+}
+
+.tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 24px;
+}
+
+.tabs button {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid #cbd9d2;
+    background: white;
+    color: #173b32;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.tabs button.active {
+    background: #087f5b;
+    color: white;
+    border-color: #087f5b;
+}
+
+.form-group {
+    margin-bottom: 17px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 7px;
+    font-weight: bold;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #cbd9d2;
+    border-radius: 8px;
+    background: white;
+    font-size: 15px;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: 2px solid #8bd5b5;
+    border-color: #087f5b;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 8px;
+    background: #087f5b;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.submit-btn:hover {
+    background: #066b4d;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.notice {
+    padding: 12px;
+    margin-bottom: 16px;
+    border-radius: 8px;
+    background: #edf8f1;
+    color: #285b45;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+#message {
+    margin-top: 16px;
+    line-height: 1.5;
+}
+
+.security-note {
+    margin-top: 22px;
+    color: #687a73;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+@media (max-width: 480px) {
+    .auth-card {
+        padding: 24px 18px;
+    }
+}
