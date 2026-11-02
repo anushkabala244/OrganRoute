@@ -1,0 +1,134 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OrganRoute | Login & Register</title>
+    <link rel="stylesheet" href="auth.css">
+</head>
+<body>
+
+    <main class="auth-container">
+        <section class="auth-card">
+
+            <a class="brand" href="../index.html">OrganRoute</a>
+
+            <h1>Welcome to OrganRoute</h1>
+            <p class="subtitle">
+                A platform connecting patients and hospitals.
+            </p>
+
+            <div class="tabs">
+                <button id="loginTab" class="active" type="button">
+                    Login
+                </button>
+
+                <button id="registerTab" type="button">
+                    Register
+                </button>
+            </div>
+
+            <form id="authForm">
+
+                <div id="nameGroup" class="form-group hidden">
+                    <label for="fullName">Full Name</label>
+                    <input
+                        type="text"
+                        id="fullName"
+                        placeholder="Enter your full name"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="accountType">Account Type</label>
+
+                    <select id="accountType" required>
+                        <option value="patient">Patient / Family</option>
+                        <option value="hospital">Hospital / Staff</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        placeholder="Enter your email"
+                        required
+                    >
+                </div>
+
+                <div id="phoneGroup" class="form-group hidden">
+                    <label for="phone">Mobile Number</label>
+
+                    <input
+                        type="tel"
+                        id="phone"
+                        placeholder="Enter mobile number"
+                    >
+                </div>
+
+                <div id="hospitalGroup" class="form-group hidden">
+                    <label for="hospitalName">Hospital Name</label>
+
+                    <input
+                        type="text"
+                        id="hospitalName"
+                        placeholder="Enter registered hospital name"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+
+                    <input
+                        type="password"
+                        id="password"
+                        placeholder="Minimum 8 characters"
+                        minlength="8"
+                        required
+                    >
+                </div>
+
+                <div id="confirmGroup" class="form-group hidden">
+                    <label for="confirmPassword">Confirm Password</label>
+
+                    <input
+                        type="password"
+                        id="confirmPassword"
+                        placeholder="Re-enter password"
+                    >
+                </div>
+
+                <div id="documentNote" class="notice hidden">
+                    Medical records and identity documents must only be
+                    uploaded through a secure, verified workflow.
+                    Do not enter Aadhaar or PAN details on this demo form.
+                </div>
+
+                <div id="hospitalNote" class="notice hidden">
+                    Hospital accounts require verification and approval
+                    before hospital features can be accessed.
+                </div>
+
+                <button id="submitButton" class="submit-btn" type="submit">
+                    Login
+                </button>
+
+                <p id="message" role="status"></p>
+
+            </form>
+
+            <p class="security-note">
+                OrganRoute demo: real OTP delivery and account authentication
+                require backend integration.
+            </p>
+
+        </section>
+    </main>
+
+    <script src="auth.js"></script>
+</body>
+</html>
