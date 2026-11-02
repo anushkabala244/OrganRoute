@@ -1,32 +1,31 @@
+
 const mongoose = require("mongoose");
 
 async function connectDB() {
     const uri = process.env.MONGODB_URI?.trim();
 
     if (!uri) {
-        throw new Error("MONGODB_URI is not set. Add your MongoDB Atlas URI to backend/.env.");
+        throw new Error("MONGODB_URI is missing from backend/.env");
     }
 
-    let parsedUri;
-    try {
-        parsedUri = new URL(uri);
-    } catch {
-        throw new Error("MONGODB_URI is invalid. Check the MongoDB Atlas connection string.");
-    }
-
-    if (!["mongodb:", "mongodb+srv:"].includes(parsedUri.protocol)) {
-        throw new Error("MONGODB_URI must use the mongodb:// or mongodb+srv:// scheme.");
-    }
-
-    if (/[<>]/.test(uri) || /YOUR_[A-Z_]+|CHANGE_ME|db_password/i.test(uri)) {
-        throw new Error("MONGODB_URI still contains template placeholders. Replace them with your MongoDB Atlas credentials.");
+    if (
+        /[<>]/.test(uri) ||
+        /YOUR_[A-Z_]+|CHANGE_ME|db_password/i.test(uri)
+    ) {
+        throw new Error("Your MongoDB URI still contains a placeholder.");
     }
 
     try {
-        await mongoose.connect(uri);
+        await mongoose.connect(uri, {
+            serverSelectionTimeoutMS: 15000,
+            connectTimeoutMS: 15000,
+            family: 4
+        });
+
         console.log("MongoDB connected successfully!");
     } catch (error) {
-        throw new Error(`MongoDB connection failed: ${error.message}`, { cause: error });
+        console.error("MongoDB connection error:", error.message);
+        throw error;
     }
 }
 

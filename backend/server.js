@@ -1,36 +1,49 @@
+
 require("dotenv").config();
 
 const express = require("express");
+const path = require("path");
 const connectDB = require("./config/db");
+const authRoutes = require("./routes/auth");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(express.json());
+// Middleware
+app.use(express.json({ limit: "10kb" }));
+app.use(express.urlencoded({ extended: true }));
 
-app.get("/", (req, res) => {
-    res.json({
-        message: "Welcome to OrganRoute Backend!",
-        status: "Server is running"
-    });
-});
+// Serve OrganRoute frontend files from the main project folder
+app.use(express.static(path.join(__dirname, "..")));
 
+// API health check
 app.get("/api/health", (req, res) => {
     res.json({
         success: true,
-        message: "OrganRoute API is working"
+        message: "OrganRoute API is working",
+        database: "Connected"
     });
 });
 
-async function startServer() {
-    await connectDB();
+// Authentication routes
+app.use("/api/auth", authRoutes);
 
-    app.listen(PORT, () => {
-        console.log(`OrganRoute backend running at http://localhost:${PORT}`);
-    });
+// Start server after database connection
+async function startServer() {
+    try {
+        await connectDB();
+
+        app.listen(PORT, () => {
+            console.log("--------------------------------");
+            console.log("OrganRoute is running!");
+            console.log(`Website: http://localhost:${PORT}`);
+            console.log(`API: http://localhost:${PORT}/api/health`);
+            console.log("--------------------------------");
+        });
+    } catch (error) {
+        console.error("Server startup failed:", error.message);
+        process.exit(1);
+    }
 }
 
-startServer().catch((error) => {
-    console.error(error.message);
-    process.exitCode = 1;
-});
+startServer();
