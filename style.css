@@ -642,33 +642,56 @@ button {
 }
 
 .auth-overlay {
+    --auth-overlay-padding: clamp(12px, 4vh, 24px);
     position: fixed;
     inset: 0;
     z-index: 1000;
-    display: grid;
-    place-items: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     overflow-y: auto;
-    padding: 24px;
+    overscroll-behavior: contain;
+    padding: var(--auth-overlay-padding);
     background: rgba(12, 38, 29, 0.58);
     backdrop-filter: blur(5px);
 }
 
 .auth-modal {
+    --auth-modal-padding: 32px;
     position: relative;
+    box-sizing: border-box;
     width: min(100%, 480px);
     max-height: calc(100vh - 48px);
+    max-height: calc(100dvh - var(--auth-overlay-padding) - var(--auth-overlay-padding));
     overflow-y: auto;
-    padding: 36px;
+    overscroll-behavior: contain;
+    padding: var(--auth-modal-padding);
     border: 1px solid var(--border);
     border-radius: 20px;
     background: var(--white);
     box-shadow: 0 24px 70px rgba(8, 45, 31, 0.24);
 }
 
+.auth-modal-toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 36px;
+    margin: calc(-1 * var(--auth-modal-padding)) calc(-1 * var(--auth-modal-padding)) 12px;
+    padding: 8px var(--auth-modal-padding);
+    background: var(--white);
+}
+
+.auth-back {
+    min-height: 36px;
+    padding: 0;
+}
+
 .auth-close {
-    position: absolute;
-    top: 16px;
-    right: 16px;
+    flex: 0 0 36px;
     display: grid;
     width: 36px;
     height: 36px;
@@ -797,6 +820,21 @@ button {
 .auth-modal select:focus {
     outline: 3px solid rgba(8, 127, 91, 0.14);
     border-color: var(--green);
+}
+
+.auth-modal .phone-input-row {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.4fr);
+    gap: 8px;
+}
+
+.auth-modal .phone-input-row select {
+    min-width: 0;
+    padding: 8px;
+}
+
+.auth-modal .phone-input-row input {
+    min-width: 0;
 }
 
 .auth-submit {
@@ -943,12 +981,12 @@ button {
 
 @media (max-width: 420px) {
     .auth-overlay {
-        padding: 12px;
+        --auth-overlay-padding: 12px;
+        align-items: flex-start;
     }
 
     .auth-modal {
-        max-height: calc(100vh - 24px);
-        padding: 28px 20px;
+        --auth-modal-padding: 20px;
     }
 
     .logo {
@@ -983,4 +1021,233 @@ button {
     .badge-bottom {
         bottom: 12px;
     }
+}
+
+@media (max-height: 560px) {
+    .auth-overlay {
+        --auth-overlay-padding: 12px;
+        align-items: flex-start;
+    }
+}
+
+.stats-section {
+    background: #f7fbf9;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 18px;
+    margin-top: 40px;
+}
+
+.stat-card {
+    display: grid;
+    gap: 8px;
+    padding: 25px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: var(--white);
+}
+
+.stat-card strong {
+    color: var(--green);
+    font: 800 29px/1.2 'Manrope', sans-serif;
+}
+
+.stat-card span,
+.network-note p,
+.network-copy p,
+.awareness-section p,
+.chatbot-section p,
+.contact-section p {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+.network-section {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 45px;
+    align-items: center;
+}
+
+.network-copy h2,
+.awareness-section h2,
+.chatbot-section h2 {
+    margin: 14px 0;
+    font: 800 clamp(26px, 3vw, 38px)/1.2 'Manrope', sans-serif;
+    letter-spacing: -1px;
+}
+
+.network-copy .btn {
+    margin-top: 22px;
+}
+
+.network-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 26px;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    background: var(--mint);
+}
+
+.network-note-icon,
+.awareness-mark {
+    display: grid;
+    flex: 0 0 48px;
+    width: 48px;
+    height: 48px;
+    place-items: center;
+    border-radius: 14px;
+    background: var(--green-light);
+    color: var(--green);
+    font-size: 26px;
+}
+
+.network-note strong {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.awareness-section {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 24px;
+    align-items: start;
+    background: #f7fbf9;
+}
+
+.awareness-mark {
+    width: 64px;
+    height: 64px;
+    font-size: 32px;
+}
+
+.chatbot-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 32px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    background: linear-gradient(120deg, #f1faf5, #fff);
+}
+
+.chatbot-section > div {
+    max-width: 650px;
+}
+
+.chatbot-section .btn {
+    flex: 0 0 auto;
+}
+
+.contact-section {
+    background: #f7fbf9;
+}
+
+.contact-section .section-heading {
+    max-width: 760px;
+    margin: 0 auto;
+}
+
+.contact-actions {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.footer-disclaimer {
+    max-width: 400px;
+    color: #8a9b94;
+    font-size: 11px;
+}
+
+.auth-feedback {
+    margin: 4px 0 12px;
+    color: var(--green-dark);
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.auth-feedback:empty {
+    display: none;
+}
+
+.auth-feedback.error {
+    color: #b42318;
+}
+
+.development-otp {
+    display: grid;
+    gap: 7px;
+    margin: 14px 0;
+    padding: 13px;
+    border: 1px solid #d6e8dc;
+    border-radius: 9px;
+    background: #f2faf5;
+    color: var(--text);
+    font-size: 12px;
+}
+
+.development-otp code {
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: white;
+    color: var(--green-dark);
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.development-otp small {
+    color: var(--muted);
+    line-height: 1.5;
+}
+
+.auth-modal [aria-busy="true"] {
+    opacity: 0.75;
+    cursor: wait;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+@media (max-width: 760px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .network-section {
+        grid-template-columns: 1fr;
+    }
+
+    .awareness-section {
+        grid-template-columns: 1fr;
+    }
+
+    .chatbot-section {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 420px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
 }

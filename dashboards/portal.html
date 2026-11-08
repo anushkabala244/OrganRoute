@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#075b43">
+    <title>OrganRoute | Workspace</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="../mimi.css">
+</head>
+<body>
+    <div class="workspace">
+        <aside class="sidebar">
+            <a class="brand" href="../index.html"><span class="brand-mark">+</span> Organ<span>Route</span></a>
+            <p class="sidebar-label">WORKSPACE</p>
+            <nav id="dashboard-nav" aria-label="Dashboard navigation"></nav>
+            <div class="sidebar-bottom">
+                <a href="../routing.html">Open route planner <span aria-hidden="true">↗</span></a>
+                <a href="../index.html">Back to home</a>
+            </div>
+        </aside>
+
+        <main class="main-panel">
+            <header class="topbar">
+                <div>
+                    <p class="eyebrow" id="workspace-role">ORGANROUTE WORKSPACE</p>
+                    <h1 id="workspace-title">Your dashboard</h1>
+                </div>
+                <div class="user-menu">
+                    <span class="avatar" id="user-avatar">O</span>
+                    <span id="user-name">Loading account…</span>
+                    <button class="button button-quiet" id="logout-button" type="button">Sign out</button>
+                </div>
+            </header>
+            <div class="workspace-notice" id="workspace-notice" role="status" aria-live="polite" hidden></div>
+            <section id="dashboard-content" class="content" aria-live="polite">
+                <div class="loading-state">Loading your secure workspace…</div>
+            </section>
+            <footer class="workspace-footer">
+                Academic prototype · Demo information and route estimates are not for clinical use.
+            </footer>
+        </main>
+    </div>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="dashboard.js"></script>
+    <script src="../mimi.js"></script>
+</body>
+</html>

@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node --test test/*.test.js",
+    "generate:demo-documents": "node scripts/generateDemoDocuments.js",
+    "prestart": "npm run generate:demo-documents",
     "start": "node server.js"
   },
   "keywords": [],
@@ -19,6 +21,7 @@
     "express-rate-limit": "^8.7.1",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.11.4",
+    "multer": "^2.5.0",
     "nodemailer": "^10.2.1",
     "twilio": "^6.2.0"
   }

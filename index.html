@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OrganRoute | Connecting Lives, Creating Hope</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="mimi.css">
 </head>
 <body>
 
@@ -20,6 +21,7 @@
             <a href="#about">About Us</a>
             <a href="#services">Our Services</a>
             <a href="#how-it-works">How It Works</a>
+            <a href="#network">Hospital Network</a>
         </nav>
 
         <div class="nav-buttons">
@@ -136,11 +138,10 @@
 
                 <article class="service-card">
                     <div class="service-icon hospital-icon">✚</div>
-                    <h3>Hospital & Staff Portal</h3>
+                    <h3>Hospital Administrator Portal</h3>
                     <p>
-                        Dedicated accounts for hospitals and authorised
-                        staff, with registration verification and
-                        role-based dashboard access.
+                        A dedicated hospital administrator account with
+                        registration verification and protected dashboard access.
                     </p>
                     <a href="#register">Explore hospital services →</a>
                 </article>
@@ -152,7 +153,7 @@
                         Explore hospital information and available
                         healthcare services using search and location filters.
                     </p>
-                    <a href="#how-it-works">Learn more →</a>
+                    <a href="routing.html">Open route planner →</a>
                 </article>
             </div>
         </section>
@@ -180,7 +181,7 @@
                 <h3>Built Around People</h3>
                 <p>
                     Separate experiences for patients, families,
-                    hospital staff and administrators.
+                    hospital administrators.
                 </p>
                 <div class="highlight-divider"></div>
                 <h3>Designed for Trust</h3>
@@ -204,8 +205,9 @@
                     <span class="step-number">01</span>
                     <h3>Create an Account</h3>
                     <p>
-                        Choose the appropriate account type:
-                        patient/family or hospital/staff.
+                        Patient and hospital accounts can register here.
+                        Drivers are invited by their hospital; platform
+                        administrators use their internal sign-in route.
                     </p>
                 </article>
 
@@ -229,23 +231,110 @@
             </div>
         </section>
 
+        <section class="stats-section section" aria-labelledby="stats-title">
+            <div class="section-heading">
+                <span class="eyebrow">A CLEARER VIEW</span>
+                <h2 id="stats-title">Coordination, Made More Visible</h2>
+                <p>Illustrative platform figures.</p>
+            </div>
+            <div class="stats-grid">
+                <article class="stat-card">
+                    <strong>24/7</strong>
+                    <span>Access to platform information</span>
+                </article>
+                <article class="stat-card">
+                    <strong>3</strong>
+                    <span>Connected account experiences</span>
+                </article>
+                <article class="stat-card">
+                    <strong>1</strong>
+                    <span>Shared coordination workspace</span>
+                </article>
+                <article class="stat-card">
+                    <strong>Demo</strong>
+                    <span>Hospital data may be illustrative</span>
+                </article>
+            </div>
+        </section>
+
+        <section class="network-section section" id="network">
+            <div class="network-copy">
+                <span class="eyebrow">HOSPITAL NETWORK</span>
+                <h2>Explore Routes Between Participating Hospitals</h2>
+                <p>
+                    Use the route planner to view road-route estimates between
+                    listed hospitals. Demo locations may be approximate and
+                    must never be used to coordinate a real clinical transfer.
+                </p>
+                <a class="btn btn-primary" href="routing.html">Open route planner <span>→</span></a>
+            </div>
+            <div class="network-note">
+                <span class="network-note-icon">⌖</span>
+                <div>
+                    <strong>Route estimates are informational</strong>
+                    <p>Transport decisions belong to authorised clinical and logistics teams.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="awareness-section section" id="awareness">
+            <div class="awareness-mark" aria-hidden="true">♡</div>
+            <div>
+                <span class="eyebrow">ORGAN DONATION AWARENESS</span>
+                <h2>Learn from trusted health authorities</h2>
+                <p>
+                    Donation eligibility, consent, allocation and transplant
+                    care are governed by local law and specialist medical
+                    teams. OrganRoute does not determine eligibility, match
+                    donors to recipients, or provide medical advice.
+                </p>
+            </div>
+        </section>
+
+        <section class="chatbot-section section" id="assistant">
+            <div>
+                <span class="eyebrow">ORGANROUTE ASSISTANT</span>
+                <h2>Quick answers about using the platform</h2>
+                <p>
+                    Ask about registration, account verification, request
+                    statuses or route planning. The assistant is not a source
+                    of medical or emergency advice.
+                </p>
+            </div>
+            <button class="btn btn-primary" type="button" id="open-chat">
+                Ask Mimi <span>→</span>
+            </button>
+        </section>
+
+        <section class="contact-section section" id="contact">
+            <div class="section-heading">
+                <span class="eyebrow">CONTACT & SUPPORT</span>
+                <h2>Need help navigating the platform?</h2>
+                <p>
+                    Sign in to manage your requests, or use the OrganRoute
+                    assistant for help with platform features. For medical or
+                    emergency needs, contact a licensed healthcare provider
+                    or your local emergency service.
+                </p>
+            </div>
+            <div class="contact-actions">
+                <button class="btn btn-primary" type="button" data-open-auth="register">Create an account</button>
+                <button class="btn btn-outline" type="button" id="open-chat-secondary">Ask Mimi</button>
+            </div>
+        </section>
+
         <!-- Call to Action -->
         <section class="cta-section" id="register">
             <div>
                 <span class="eyebrow">YOUR JOURNEY STARTS HERE</span>
-                <h2>Let's Make Healthcare Information Easier to Navigate.</h2>
+                <h2>Sign in or create your account.</h2>
                 <p>
-                    Choose your account type to explore the OrganRoute platform.
+                    Choose Login to access your account or Register to create one.
                 </p>
             </div>
-
-            <div class="cta-buttons" id="login">
-                <button class="btn btn-white" data-account="patient">
-                    Patient / Family
-                </button>
-                <button class="btn btn-cta-outline" data-account="hospital">
-                    Hospital / Staff
-                </button>
+            <div class="cta-buttons">
+                <button class="btn btn-white" type="button" data-open-auth="login">Login</button>
+                <button class="btn btn-cta-outline" type="button" data-open-auth="register">Register</button>
             </div>
         </section>
     </main>
@@ -258,14 +347,18 @@
         </a>
 
         <p>
-            Supporting the journey towards authorised healthcare services.
+            Supporting coordination for authorised healthcare services.
+        </p>
+        <p class="footer-disclaimer">
+            Demo data and route estimates are not for clinical use.
         </p>
 
         <span class="copyright">
-            © 2026 OrganRoute. Academic project prototype.
+            © 2026 OrganRoute.
         </span>
     </footer>
 
-    <script src="script.js"></script>
+    <script src="mimi.js"></script>
+    <script src="script.js?v=auth-navigation-reset-flow-v2"></script>
 </body>
 </html>

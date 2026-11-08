@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>OrganRoute | Hospital Routing</title>
+
+    <link rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+    <link rel="stylesheet" href="routing.css">
+</head>
+
+<body>
+
+    <header class="header">
+        <div class="logo">Organ<span>Route</span></div>
+        <a href="index.html" class="back-link">← Back to Home</a>
+    </header>
+
+    <main class="container">
+
+        <section class="page-heading">
+            <p class="tag">SMART ORGAN TRANSPORT</p>
+            <h1>Hospital Route Planner</h1>
+            <p>Find the fastest road route between registered hospitals.</p>
+            <p class="route-disclaimer">
+                Informational estimates only. Do not use this prototype to
+                coordinate clinical transport or make medical decisions.
+            </p>
+        </section>
+
+        <section class="route-card">
+
+            <div class="field">
+                <label for="sourceHospital">Source Hospital</label>
+                <select id="sourceHospital">
+                    <option value="">Loading hospitals...</option>
+                </select>
+            </div>
+
+            <div class="field">
+                <label for="recipientHospital">Destination Hospital</label>
+                <select id="recipientHospital">
+                    <option value="">Loading hospitals...</option>
+                </select>
+            </div>
+
+            <button id="findRouteBtn">
+                Find Fastest Route
+            </button>
+
+            <p id="statusMessage" class="status"></p>
+
+        </section>
+
+        <section id="routeResults" class="results hidden">
+
+            <div class="result-card">
+                <span>Distance</span>
+                <h2 id="distanceValue">--</h2>
+            </div>
+
+            <div class="result-card">
+                <span>Estimated Time</span>
+                <h2 id="timeValue">--</h2>
+            </div>
+
+            <div class="result-card">
+                <span>Hospitals in Path</span>
+                <h2 id="hospitalCount">--</h2>
+            </div>
+
+        </section>
+
+        <section id="routeOptions" class="route-options hidden" aria-live="polite">
+            <div class="map-heading">
+                <h2>Available road routes</h2>
+                <p>Select a route to update the map and estimate.</p>
+            </div>
+            <div id="routeOptionList" class="route-option-list"></div>
+        </section>
+
+        <div id="demoWarning" class="warning hidden"></div>
+
+        <section class="map-section">
+            <div class="map-heading">
+                <h2>Live Route Map</h2>
+                <p>Road route powered by OpenStreetMap and OSRM.</p>
+            </div>
+
+            <div id="map"></div>
+        </section>
+
+        <section class="path-section">
+            <h2>Hospital Route Sequence</h2>
+            <div id="hospitalPath">
+                Select hospitals to view the route.
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>OrganRoute © 2026 | Academic Project Prototype</p>
+    </footer>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="routing.js"></script>
+
+</body>
+</html>
