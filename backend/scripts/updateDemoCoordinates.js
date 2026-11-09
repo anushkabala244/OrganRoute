@@ -3,8 +3,7 @@ require("dotenv").config();
 
 const mongoose = require("mongoose");
 const Hospital = require("../models/Hospital");
-
-const NOMINATIM_URL = "https://nominatim.openstreetmap.org/search";
+const { geocodeAddress } = require("../services/geocodingService");
 
 const demoLocations = [
     { name: "City Care Hospital", city: "Noida", offset: 0 },
@@ -22,40 +21,6 @@ const offsets = [
 const delay = ms =>
     new Promise(resolve => setTimeout(resolve, ms));
 
-async function getCityCoordinates(city) {
-    const params = new URLSearchParams({
-        city,
-        state: city === "Delhi" ? "Delhi" : "Uttar Pradesh",
-        country: "India",
-        format: "json",
-        limit: "1"
-    });
-
-    const response = await fetch(
-        `${NOMINATIM_URL}?${params}`,
-        {
-            headers: {
-                "User-Agent": "OrganRoute-MCA-Demo/1.0"
-            }
-        }
-    );
-
-    if (!response.ok) {
-        throw new Error(`Geocoding failed for ${city}`);
-    }
-
-    const results = await response.json();
-
-    if (!results.length) {
-        throw new Error(`No coordinates found for ${city}`);
-    }
-
-    return {
-        latitude: Number(results[0].lat),
-        longitude: Number(results[0].lon)
-    };
-}
-
 async function updateDemoCoordinates() {
     try {
         await mongoose.connect(process.env.MONGODB_URI);
@@ -63,7 +28,14 @@ async function updateDemoCoordinates() {
         const cityCoordinates = {};
 
         for (const city of ["Noida", "Delhi", "Ghaziabad"]) {
-            cityCoordinates[city] = await getCityCoordinates(city);
+            cityCoordinates[city] = await geocodeAddress({
+                city,
+                state: city === "Delhi" ? "Delhi" : "Uttar Pradesh",
+                country: "India"
+            });
+            if (!cityCoordinates[city]) {
+                throw new Error(`No coordinates found for ${city}`);
+            }
             await delay(1100);
         }
 

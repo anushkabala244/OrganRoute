@@ -9,6 +9,7 @@ const rateLimit = require("express-rate-limit");
 const User = require("../models/User");
 const Hospital = require("../models/Hospital");
 const { isConfigured, sendEmail } = require("../services/emailService");
+const geocodingService = require("../services/geocodingService");
 
 const router = express.Router();
 
@@ -105,12 +106,14 @@ function createToken(user) {
 // Public registration is restricted to patients and hospitals.
 router.post("/register", registrationLimiter, async (req, res) => {
     let user;
+    let geocodedCoordinates = null;
+    let geocodingWarning = "";
 
     try {
         const {
             name, email, phone, password, role,
-            hospitalName, address, city, state, speciality, registrationNumber,
-            latitude, longitude,
+            hospitalName, address, country, city, state, postalCode,
+            speciality, registrationNumber,
             verificationMethod
         } = req.body;
 
@@ -165,35 +168,20 @@ router.post("/register", registrationLimiter, async (req, res) => {
                 typeof address !== "string" ||
                 !address.trim() ||
                 address.trim().length > 240 ||
+                typeof country !== "string" ||
+                !country.trim() ||
+                country.trim().length > 100 ||
                 typeof registrationNumber !== "string" ||
                 !registrationNumber.trim() ||
-                registrationNumber.trim().length > 80
+                registrationNumber.trim().length > 80 ||
+                typeof postalCode !== "string" ||
+                !postalCode.trim() ||
+                postalCode.trim().length > 20
             )
         ) {
             return res.status(400).json({
                 success: false,
-                message: "Hospital name, address, registration number, city and state are required."
-            });
-        }
-
-        const hasLatitude = latitude !== undefined && String(latitude).trim() !== "";
-        const hasLongitude = longitude !== undefined && String(longitude).trim() !== "";
-        const hospitalLatitude = hasLatitude ? Number(latitude) : null;
-        const hospitalLongitude = hasLongitude ? Number(longitude) : null;
-        if (
-            accountRole === "hospital" &&
-            (hasLatitude !== hasLongitude ||
-                (hasLatitude &&
-                    (!Number.isFinite(hospitalLatitude) ||
-                        hospitalLatitude < -90 ||
-                        hospitalLatitude > 90 ||
-                        !Number.isFinite(hospitalLongitude) ||
-                        hospitalLongitude < -180 ||
-                        hospitalLongitude > 180)))
-        ) {
-            return res.status(400).json({
-                success: false,
-                message: "Provide both valid hospital coordinates or leave both blank."
+                message: "Hospital name, address, country, registration number, city, state and PIN code are required."
             });
         }
 
@@ -215,6 +203,26 @@ router.post("/register", registrationLimiter, async (req, res) => {
                 success: false,
                 message: "Email or phone is already registered."
             });
+        }
+
+        if (accountRole === "hospital") {
+            try {
+                geocodedCoordinates = await geocodingService.geocodeAddress({
+                    address,
+                    city,
+                    state,
+                    postalCode,
+                    country
+                });
+                if (!geocodedCoordinates) {
+                    geocodingWarning =
+                        "The address could not be located automatically. Routing will remain unavailable until the hospital location is resolved.";
+                }
+            } catch (error) {
+                console.error("Hospital address geocoding failed:", error.message);
+                geocodingWarning =
+                    "Automatic location lookup is temporarily unavailable. Routing will remain unavailable until the hospital location is resolved.";
+            }
         }
 
         const otp = createOtp();
@@ -248,14 +256,15 @@ router.post("/register", registrationLimiter, async (req, res) => {
                 name: hospitalName.trim(),
                 address: address.trim(),
                 registrationNumber: registrationNumber.trim(),
+                country: country.trim(),
                 city: city.trim(),
                 state: state.trim(),
+                postalCode: postalCode.trim(),
                 speciality: speciality || "Multi-speciality",
                 contact: cleanPhone,
                 userId: user._id,
                 verified: false,
-                latitude: hospitalLatitude,
-                longitude: hospitalLongitude,
+                ...(geocodedCoordinates || {}),
                 inventory: []
             });
 
@@ -266,7 +275,7 @@ router.post("/register", registrationLimiter, async (req, res) => {
         if (developmentOtpMode()) {
             return res.status(201).json({
                 success: true,
-                message: `Development account created. Use the displayed code to verify your ${verificationMethod === "email" ? "email" : "phone"}.`,
+                message: `Development account created. Use the displayed code to verify your ${verificationMethod === "email" ? "email" : "phone"}.${geocodingWarning ? ` ${geocodingWarning}` : ""}`,
                 role: accountRole,
                 verificationMethod,
                 developmentOtp: { code: otp }
@@ -288,9 +297,9 @@ router.post("/register", registrationLimiter, async (req, res) => {
 
         return res.status(201).json({
             success: true,
-            message: verificationMethod === "email"
+            message: `${verificationMethod === "email"
                 ? "Registration successful. An email verification code has been sent."
-                : "Registration successful. An SMS verification code has been sent.",
+                : "Registration successful. An SMS verification code has been sent."}${geocodingWarning ? ` ${geocodingWarning}` : ""}`,
             verificationMethod,
             role: accountRole
         });
@@ -590,7 +599,7 @@ router.post("/forgot-password", passwordResetLimiter, async (req, res) => {
         const baseUrl = process.env.APP_BASE_URL || "http://localhost:5050";
         const resetUrl = new URL("/", baseUrl);
         resetUrl.searchParams.set("passwordReset", token);
-        const selectedRole = ["patient", "hospital"].includes(req.body?.role)
+        const selectedRole = ["patient", "hospital", "driver", "admin"].includes(req.body?.role)
             ? req.body.role
             : "patient";
         if (developmentMode) {

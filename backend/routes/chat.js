@@ -5,11 +5,25 @@ const chatbotUrl = process.env.CHATBOT_SERVICE_URL || "http://127.0.0.1:8000/cha
 
 router.post("/", async (req, res) => {
     const message = req.body?.message;
+    const history = req.body?.history ?? [];
 
-    if (typeof message !== "string" || !message.trim() || message.length > 1000) {
+    if (
+        typeof message !== "string" ||
+        !message.trim() ||
+        message.length > 1000 ||
+        !Array.isArray(history) ||
+        history.length > 12 ||
+        history.some(turn =>
+            !turn ||
+            !["user", "assistant"].includes(turn.role) ||
+            typeof turn.content !== "string" ||
+            !turn.content.trim() ||
+            turn.content.length > 1000
+        )
+    ) {
         return res.status(400).json({
             success: false,
-            message: "Enter a question of up to 1,000 characters."
+            message: "Enter a question of up to 1,000 characters and at most 12 valid prior chat messages."
         });
     }
 
@@ -17,7 +31,13 @@ router.post("/", async (req, res) => {
         const upstream = await fetch(chatbotUrl, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ message: message.trim() }),
+            body: JSON.stringify({
+                message: message.trim(),
+                history: history.map(turn => ({
+                    role: turn.role,
+                    content: turn.content.trim()
+                }))
+            }),
             signal: AbortSignal.timeout(10000)
         });
         const data = await upstream.json();

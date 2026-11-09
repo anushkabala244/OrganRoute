@@ -91,6 +91,20 @@ const hospitalSchema = new mongoose.Schema(
             default: ""
         },
 
+        country: {
+            type: String,
+            trim: true,
+            maxlength: 100,
+            default: "India"
+        },
+
+        postalCode: {
+            type: String,
+            trim: true,
+            maxlength: 20,
+            default: ""
+        },
+
         registrationNumber: {
             type: String,
             trim: true,

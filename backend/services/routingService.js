@@ -92,6 +92,35 @@ function formatRoute(route, index) {
     };
 }
 
+function selectShortestRoute(routeOptions) {
+    const source = "route-source";
+    const destination = "route-destination";
+    const graph = new Map([
+        [source, new Map()],
+        [destination, new Map()]
+    ]);
+
+    routeOptions.forEach(route => {
+        const routeNode = `route-option:${route.id}`;
+        graph.get(source).set(routeNode, route.distanceMeters);
+        graph.set(routeNode, new Map([[destination, 0]]));
+    });
+
+    const result = dijkstra(graph, source, destination);
+    if (!result.success || !result.path || result.path.length !== 3) {
+        throw new Error("Unable to select the shortest available road route.");
+    }
+
+    const selected = routeOptions.find(
+        route => `route-option:${route.id}` === result.path[1]
+    );
+    if (!selected) {
+        throw new Error("The shortest road route could not be matched to an option.");
+    }
+
+    return selected;
+}
+
 async function calculateHospitalRoute(sourceHospitalId, recipientHospitalId) {
     const hospitals = await getRoutingHospitals();
 
@@ -190,9 +219,7 @@ async function calculateHospitalRoute(sourceHospitalId, recipientHospitalId) {
         current.durationSeconds < best.durationSeconds ? current : best
     );
 
-    const shortestRoute = routeOptions.reduce((best, current) =>
-        current.distanceMeters < best.distanceMeters ? current : best
-    );
+    const shortestRoute = selectShortestRoute(routeOptions);
 
     const demoMode = hospitalPath.some(hospital => hospital.isDemo);
 
@@ -239,5 +266,6 @@ async function calculateHospitalRoute(sourceHospitalId, recipientHospitalId) {
 
 module.exports = {
     getRoutingHospitals,
-    calculateHospitalRoute
+    calculateHospitalRoute,
+    selectShortestRoute
 };

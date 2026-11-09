@@ -503,8 +503,9 @@ async function renderNewRequest() {
                         <span>
                             <strong>${escapeHtml(hospital.name)}</strong>
                             <small>${escapeHtml(hospital.city)}, ${escapeHtml(hospital.state)} · ${escapeHtml(organSelect.value)} · ${hospital.availableUnits} reported unit(s)</small>
+                            ${hospital.isDemo ? `<small class="fictional-label">FICTIONAL DEMO HOSPITAL · DEMO AVAILABILITY</small>` : ""}
                         </span>
-                        <span class="availability-tag">${escapeHtml(hospital.availabilityStatus)} · verified</span>
+                        <span class="availability-tag">${escapeHtml(hospital.availabilityStatus)} · ${hospital.isDemo ? "fictional demo" : "verified"}</span>
                     </article>
                    `).join("")}
                    <p class="security-note">Reported availability does not guarantee medical suitability, compatibility or eligibility.</p>`
@@ -611,13 +612,11 @@ async function renderDrivers() {
                     <h3>${escapeHtml(driver.name)}</h3>
                     <p>${escapeHtml(driver.email)} · ${escapeHtml(driver.phone)}</p>
                     <p>${escapeHtml(driver.vehicleType || "Vehicle not set")} · ${escapeHtml(driver.vehicleNumber || "Registration not set")}</p>
-                    <p>Account: ${driver.approved ? "Approved" : "Waiting for hospital approval"} · Status: ${driver.isActive === false ? "Deactivated" : "Active"} · Availability: ${escapeHtml(driver.availabilityStatus || "available")}</p>
+                    <p>Account: Hospital-provisioned · Status: ${driver.isActive === false ? "Deactivated" : "Active"} · Availability: ${escapeHtml(driver.availabilityStatus || "available")}</p>
                 </div>
-                ${driver.approved
-                    ? `<button class="button button-quiet" type="button" data-toggle-driver data-next-active="${driver.isActive === false}">${driver.isActive === false ? "Activate driver" : "Deactivate driver"}</button>`
-                    : `<button class="button button-primary" type="button" data-approve-driver>Approve driver</button>`}
+                <button class="button button-quiet" type="button" data-toggle-driver data-next-active="${driver.isActive === false}">${driver.isActive === false ? "Activate driver" : "Deactivate driver"}</button>
             </article>
-        `).join("")}</div>` : `<div class="empty-state">No drivers have registered with your hospital yet.</div>`}
+        `).join("")}</div>` : `<div class="empty-state">No drivers have been provisioned by your hospital yet.</div>`}
         <p class="security-note">Only invite drivers whose identity, contact details, vehicle, and hospital affiliation you have verified.</p>`;
     content.querySelector("#create-driver-form").addEventListener("submit", async event => {
         event.preventDefault();
@@ -640,19 +639,6 @@ async function renderDrivers() {
                 const updated = await api(`/api/hospital/drivers/${encodeURIComponent(card.dataset.driverId)}`, {
                     method: "PATCH",
                     body: { isActive: button.dataset.nextActive === "true" }
-                });
-                showNotice(updated.message);
-                await renderDrivers();
-            });
-        });
-    });
-    content.querySelectorAll("[data-approve-driver]").forEach(button => {
-        button.addEventListener("click", async () => {
-            const card = button.closest("[data-driver-id]");
-            await submitForm(button, async () => {
-                const updated = await api(`/api/hospital/drivers/${encodeURIComponent(card.dataset.driverId)}/approve`, {
-                    method: "PATCH",
-                    body: {}
                 });
                 showNotice(updated.message);
                 await renderDrivers();
@@ -1399,7 +1385,7 @@ function intro(title, description) {
 }
 
 function demoBanner() {
-    return `<div class="demo-banner"><strong>Prototype notice:</strong> This workspace uses demonstration coordination data. It does not determine medical eligibility, donor-recipient matching, organ allocation, or clinical transport decisions.</div>`;
+    return `<div class="demo-banner"><strong>Information &amp; safety:</strong> Some records may contain fictional data and are labelled individually. This service does not determine medical eligibility, donor-recipient matching, organ allocation, or clinical transport decisions.</div>`;
 }
 
 function metrics(items) {

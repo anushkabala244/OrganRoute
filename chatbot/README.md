@@ -4,9 +4,10 @@ The assistant is a separate FastAPI service proxied by the Node API at
 `POST /api/chat`.
 
 The shared Mimi widget is shown on the OrganRoute landing page and dashboard.
-It sends questions through the existing Node proxy, displays a typing state and
-surfaces service errors. Suggested prompts cover registration, organ search,
-document uploads, request tracking and hospital delivery.
+It sends questions and up to 12 recent chat messages through the existing Node
+proxy, displays a typing state and surfaces service errors. Suggested prompts
+cover registration, organ search, document uploads, request tracking and
+hospital delivery.
 
 From this directory, install dependencies and start the service:
 

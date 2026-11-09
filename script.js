@@ -32,6 +32,44 @@ const COUNTRY_CODES = [
     ["HK", "Hong Kong", "+852"],
     ["TR", "Türkiye", "+90"]
 ];
+const HOSPITAL_CITIES_BY_STATE = {
+    "andaman and nicobar islands": ["Port Blair"],
+    "andhra pradesh": ["Amaravati", "Guntur", "Tirupati", "Vijayawada", "Visakhapatnam"],
+    "arunachal pradesh": ["Itanagar", "Naharlagun"],
+    assam: ["Dibrugarh", "Guwahati", "Silchar"],
+    bihar: ["Bhagalpur", "Gaya", "Patna"],
+    chandigarh: ["Chandigarh"],
+    chhattisgarh: ["Bilaspur", "Raipur"],
+    "dadra and nagar haveli and daman and diu": ["Daman", "Silvassa"],
+    delhi: ["Delhi", "New Delhi"],
+    goa: ["Margao", "Panaji"],
+    gujarat: ["Ahmedabad", "Gandhinagar", "Rajkot", "Surat", "Vadodara"],
+    haryana: ["Faridabad", "Gurugram", "Hisar", "Rohtak"],
+    "himachal pradesh": ["Dharamshala", "Shimla", "Solan"],
+    "jammu and kashmir": ["Jammu", "Srinagar"],
+    jharkhand: ["Bokaro", "Dhanbad", "Ranchi"],
+    karnataka: ["Bengaluru", "Hubballi", "Mangaluru", "Mysuru"],
+    kerala: ["Kochi", "Kozhikode", "Thiruvananthapuram"],
+    ladakh: ["Leh"],
+    lakshadweep: ["Kavaratti"],
+    "madhya pradesh": ["Bhopal", "Gwalior", "Indore", "Jabalpur"],
+    maharashtra: ["Mumbai", "Nagpur", "Nashik", "Pune"],
+    manipur: ["Imphal"],
+    meghalaya: ["Shillong"],
+    mizoram: ["Aizawl"],
+    nagaland: ["Dimapur", "Kohima"],
+    odisha: ["Bhubaneswar", "Cuttack", "Rourkela"],
+    puducherry: ["Karaikal", "Puducherry"],
+    punjab: ["Amritsar", "Jalandhar", "Ludhiana"],
+    rajasthan: ["Ajmer", "Jaipur", "Jodhpur", "Kota", "Udaipur"],
+    sikkim: ["Gangtok"],
+    "tamil nadu": ["Chennai", "Coimbatore", "Madurai", "Tiruchirappalli"],
+    telangana: ["Hyderabad", "Warangal"],
+    tripura: ["Agartala"],
+    "uttar pradesh": ["Agra", "Ghaziabad", "Kanpur", "Lucknow", "Noida", "Varanasi"],
+    uttarakhand: ["Dehradun", "Haridwar", "Rishikesh"],
+    "west bengal": ["Asansol", "Durgapur", "Kolkata", "Siliguri"]
+};
 
 document.addEventListener("DOMContentLoaded", () => {
     const params = new URLSearchParams(window.location.search);
@@ -148,16 +186,19 @@ function showAuthForm(role, mode, message = "", existingOverlay = null) {
                     <input id="hospital-address" name="address" type="text" maxlength="240" autocomplete="street-address" required>
                     <label for="hospital-registration">Hospital registration / license number</label>
                     <input id="hospital-registration" name="registrationNumber" type="text" maxlength="80" required>
+                    <label for="hospital-country">Country</label>
+                    <input id="hospital-country" name="country" type="text" maxlength="100" value="India" autocomplete="country-name" required>
                     <label for="hospital-city">City</label>
-                    <input id="hospital-city" name="city" type="text" maxlength="100" required>
-                    <label for="hospital-state">State / region</label>
-                    <input id="hospital-state" name="state" type="text" maxlength="100" required>
+                    <input id="hospital-city" name="city" type="text" maxlength="100" list="hospital-city-options" required>
+                    <datalist id="hospital-city-options"></datalist>
+                    <label for="hospital-state">State</label>
+                    <input id="hospital-state" name="state" type="text" maxlength="100" list="hospital-state-options" required>
+                    <datalist id="hospital-state-options">${Object.keys(HOSPITAL_CITIES_BY_STATE).map(state => `<option value="${escapeHtml(state.replace(/\b\w/g, letter => letter.toUpperCase()))}"></option>`).join("")}</datalist>
+                    <p class="auth-note">Select a state to see city suggestions. You can enter another city if it is not listed.</p>
+                    <label for="hospital-postal-code">PIN code / postal code</label>
+                    <input id="hospital-postal-code" name="postalCode" type="text" maxlength="20" autocomplete="postal-code" required>
                     <label for="hospital-speciality">Speciality</label>
                     <input id="hospital-speciality" name="speciality" type="text" maxlength="100" value="Multi-speciality">
-                    <label for="hospital-latitude">Latitude (optional)</label>
-                    <input id="hospital-latitude" name="latitude" type="number" min="-90" max="90" step="any">
-                    <label for="hospital-longitude">Longitude (optional)</label>
-                    <input id="hospital-longitude" name="longitude" type="number" min="-180" max="180" step="any">
                 ` : ""}
                 <label for="auth-password">Password</label>
                 <input id="auth-password" name="password" type="password" autocomplete="${isRegister ? "new-password" : "current-password"}" minlength="8" maxlength="128" required>
@@ -181,6 +222,20 @@ function showAuthForm(role, mode, message = "", existingOverlay = null) {
 
     if (!existingOverlay) attachOverlay(overlay);
     else overlay.querySelector("input")?.focus();
+    const hospitalState = overlay.querySelector("#hospital-state");
+    const hospitalCityOptions = overlay.querySelector("#hospital-city-options");
+    if (hospitalState && hospitalCityOptions) {
+        const updateCityOptions = () => {
+            const cities = HOSPITAL_CITIES_BY_STATE[
+                hospitalState.value.trim().toLowerCase()
+            ] || [];
+            hospitalCityOptions.replaceChildren(
+                ...cities.map(city => new Option(city, city))
+            );
+        };
+        hospitalState.addEventListener("input", updateCityOptions);
+        updateCityOptions();
+    }
     overlay.querySelector(".auth-back")?.addEventListener("click", () => {
         if (isAdmin || role === "driver") {
             window.location.assign("index.html");
@@ -494,7 +549,7 @@ function showResetPasswordForm(token, existingOverlay = null) {
                 closeOverlay(overlay);
                 const resetRole = new URLSearchParams(window.location.search).get("role");
                 window.history.replaceState(null, "", window.location.pathname);
-                if (["patient", "hospital"].includes(resetRole)) {
+                if (["patient", "hospital", "driver", "admin"].includes(resetRole)) {
                     showAuthForm(resetRole, "login");
                 } else {
                     showAccountSelection("login");

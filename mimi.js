@@ -66,6 +66,7 @@
         const form = panel.querySelector("#mimi-form");
         const input = panel.querySelector("#mimi-input");
         const sendButton = form.querySelector('button[type="submit"]');
+        const conversation = [];
 
         function open() {
             panel.hidden = false;
@@ -106,7 +107,10 @@
                 const response = await fetch("/api/chat", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ message })
+                    body: JSON.stringify({
+                        message,
+                        history: conversation.slice(-12)
+                    })
                 });
                 const result = await response.json().catch(() => ({}));
                 if (!response.ok || typeof result.reply !== "string" || !result.reply.trim()) {
@@ -114,6 +118,11 @@
                 }
                 typing.remove();
                 appendMessage(messages, result.reply, "assistant");
+                conversation.push(
+                    { role: "user", content: message },
+                    { role: "assistant", content: result.reply }
+                );
+                conversation.splice(0, Math.max(0, conversation.length - 12));
             } catch (error) {
                 typing.remove();
                 appendMessage(messages, `I couldn’t reach Mimi. ${error.message}`, "error");

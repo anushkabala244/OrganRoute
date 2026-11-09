@@ -5,6 +5,7 @@ const demoHospitals = [
         state: "Uttar Pradesh",
         speciality: "Kidney Transplant",
         contact: "9000000001",
+        isDemo: true,
         verified: false
     },
     {
@@ -13,6 +14,7 @@ const demoHospitals = [
         state: "Delhi",
         speciality: "Liver Transplant",
         contact: "9000000002",
+        isDemo: true,
         verified: false
     },
     {
@@ -21,6 +23,7 @@ const demoHospitals = [
         state: "Uttar Pradesh",
         speciality: "Heart Transplant",
         contact: "9000000003",
+        isDemo: true,
         verified: false
     },
     {
@@ -29,6 +32,7 @@ const demoHospitals = [
         state: "Uttar Pradesh",
         speciality: "Kidney Transplant",
         contact: "9000000004",
+        isDemo: true,
         verified: false
     },
     {
@@ -37,6 +41,7 @@ const demoHospitals = [
         state: "Delhi",
         speciality: "Liver Transplant",
         contact: "9000000005",
+        isDemo: true,
         verified: false
     }
 ];

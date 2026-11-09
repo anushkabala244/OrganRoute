@@ -296,7 +296,7 @@ router.get(
                         status: { $ne: "Unavailable" }
                     }
                 }
-            }).select("name city state inventory");
+            }).select("name city state inventory isDemo");
 
             res.json({
                 success: true,
@@ -314,7 +314,8 @@ router.get(
                         state: hospital.state,
                         availableUnits: item.availableUnits,
                         availabilityStatus: item.status,
-                        verified: hospital.verified
+                        verified: hospital.verified,
+                        isDemo: hospital.isDemo
                     };
                 })
             });
@@ -1404,6 +1405,7 @@ router.post(
             const baseUrl = process.env.APP_BASE_URL || "http://localhost:5050";
             const invitationUrl = new URL("/", baseUrl);
             invitationUrl.searchParams.set("passwordReset", invitationToken);
+            invitationUrl.searchParams.set("role", "driver");
             try {
                 await sendEmail({
                     to: cleanEmail,
@@ -1486,54 +1488,6 @@ router.patch(
             res.status(500).json({
                 success: false,
                 message: "Unable to update driver status."
-            });
-        }
-    }
-);
-
-router.patch(
-    "/hospital/drivers/:id/approve",
-    authenticate,
-    allow("hospital"),
-    async (req, res) => {
-        try {
-            const hospital = await getVerifiedHospitalForUser(req.user);
-            if (!hospital) {
-                return res.status(403).json({
-                    success: false,
-                    message: "Verified hospital profile not found."
-                });
-            }
-
-            const driver = await User.findOne({
-                _id: req.params.id,
-                role: "driver",
-                hospitalId: hospital._id
-            });
-            if (!driver) {
-                return res.status(404).json({
-                    success: false,
-                    message: "Driver application not found for this hospital."
-                });
-            }
-            const isContactVerified = driver.verificationMethod === "email"
-                ? driver.emailVerified
-                : driver.verificationMethod === "phone" && driver.phoneVerified;
-            if (!isContactVerified) {
-                return res.status(409).json({
-                    success: false,
-                    message: "The driver's selected email or phone must be verified before approval."
-                });
-            }
-
-            driver.approved = true;
-            driver.approvalStatus = "approved";
-            await driver.save();
-            res.json({ success: true, message: "Driver approved." });
-        } catch (error) {
-            res.status(500).json({
-                success: false,
-                message: "Unable to approve driver."
             });
         }
     }

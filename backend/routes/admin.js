@@ -15,6 +15,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 const User = require("../models/User");
 const Hospital = require("../models/Hospital");
+const { geocodeAddress } = require("../services/geocodingService");
 
 const router = express.Router();
 
@@ -237,6 +238,33 @@ router.patch(
                 });
             }
 
+            let locationWarning = "";
+            if (
+                !Number.isFinite(hospital.latitude) ||
+                !Number.isFinite(hospital.longitude)
+            ) {
+                try {
+                    const coordinates = await geocodeAddress({
+                        address: hospital.address,
+                        city: hospital.city,
+                        state: hospital.state,
+                        postalCode: hospital.postalCode,
+                        country: hospital.country || "India"
+                    });
+                    if (coordinates) {
+                        hospital.latitude = coordinates.latitude;
+                        hospital.longitude = coordinates.longitude;
+                    } else {
+                        locationWarning =
+                            "Hospital location could not be resolved automatically. Routing remains unavailable until coordinates are resolved.";
+                    }
+                } catch (error) {
+                    console.error("Hospital approval geocoding failed:", error.message);
+                    locationWarning =
+                        "Automatic location lookup is unavailable. Routing remains unavailable until coordinates are resolved.";
+                }
+            }
+
             user.approved = true;
             user.approvalStatus = "approved";
             hospital.verified = true;
@@ -246,7 +274,7 @@ router.patch(
 
             return res.json({
                 success: true,
-                message: "Hospital approved successfully.",
+                message: `Hospital approved successfully.${locationWarning ? ` ${locationWarning}` : ""}`,
                 hospital: {
                     id: hospital._id,
                     name: hospital.name,

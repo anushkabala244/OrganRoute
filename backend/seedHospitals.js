@@ -8,16 +8,25 @@ async function seedHospitals() {
     try {
         await connectDB();
 
-        // Remove previous copies of these demo records only
-        await Hospital.deleteMany({
-            contact: {
-                $in: demoHospitals.map(hospital => hospital.contact)
+        const result = await Hospital.bulkWrite(demoHospitals.map(hospital => {
+            const insertFields = { ...hospital };
+            delete insertFields.isDemo;
+            return {
+                updateOne: {
+                    filter: { contact: hospital.contact },
+                    update: {
+                        $set: { isDemo: true },
+                        $setOnInsert: insertFields
+                    },
+                    upsert: true
+                }
             }
-        });
+        }));
 
-        const hospitals = await Hospital.insertMany(demoHospitals);
-
-        console.log(`${hospitals.length} demo hospitals added successfully!`);
+        console.log(
+            `${result.upsertedCount} demo hospitals added; ` +
+            `${result.matchedCount} existing demo hospitals preserved.`
+        );
     } catch (error) {
         console.error("Error:", error.message);
         process.exitCode = 1;
